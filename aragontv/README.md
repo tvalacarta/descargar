@@ -16,3 +16,9 @@ Aquí van algunos enlaces:
 - Kivy: http://kivy.org/
 - Tvalacarta: http://blog.tvalacarta.info/plugin-xbmc/tvalacarta
 - Rtmpdump: https://rtmpdump.mplayerhq.hu/
+
+Y aquí algunas capturas:
+
+![paso1](http://media.tvalacarta.info/descargar/aragontv/paso1.jpg)
+![paso2](http://media.tvalacarta.info/descargar/aragontv/paso2.jpg)
+![paso3](http://media.tvalacarta.info/descargar/aragontv/paso3.jpg)
