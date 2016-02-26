@@ -12,7 +12,7 @@ Vale... dicho así parece que no es tan sencillo :joy:
 
 Aquí van algunos enlaces:
 
-Aragón TV: http://alacarta.aragontelevision.es/
-Kivy: http://kivy.org/
-Tvalacarta: http://blog.tvalacarta.info/plugin-xbmc/tvalacarta
-Rtmpdump: https://rtmpdump.mplayerhq.hu/
+- Aragón TV: http://alacarta.aragontelevision.es/
+- Kivy: http://kivy.org/
+- Tvalacarta: http://blog.tvalacarta.info/plugin-xbmc/tvalacarta
+- Rtmpdump: https://rtmpdump.mplayerhq.hu/
