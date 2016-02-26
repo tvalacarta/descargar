@@ -1,0 +1,224 @@
+#: import Animation kivy.animation.Animation
+
+<Paso1>:
+    page_url: ""
+
+    BoxLayout:
+        canvas:
+            Color:
+                rgb: 0.46, 0.64, 0.4
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        orientation: "vertical"
+
+        Label:
+            canvas.before:
+                Color:
+                    rgb: 0.31, 0.46, 0.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            text: "Descargar vídeos de Aragón TV v2.0"
+            text_size: self.size
+            size_hint_y: None
+            height: "40dp"
+            halign: "center"
+            valign: "middle"
+
+        BoxLayout:
+            orientation: "vertical"
+            padding: ["20dp","15dp","20dp","15dp"]
+
+            Label:
+                text: ""
+
+            Label:
+                text: "Introduce la URL de la página donde está el vídeo"
+                text_size: self.size
+                size_hint_y: None
+                height: "40dp"
+
+            Label:
+                text: ""
+                size_hint_y: None
+                height: "10dp"
+
+            TextInput:
+                text: "http://alacarta.aragontelevision.es/programas/unidad-movil/unos-goyas-muy-aragoneses-12022016-2132"
+                id: url_field
+                multiline: False
+                size_hint_y: None
+                height: "35dp"
+
+            Label:
+                text: ""
+
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgb: 0.31, 0.46, 0.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            orientation: "horizontal"
+            padding: ["20dp","15dp","20dp","15dp"]
+            size_hint_y: None
+            height: "60dp"
+
+            Button:
+                text: "Anterior"
+                #on_release: root.manager.current = root.manager.previous()
+                opacity: 0
+
+            Label:
+                text: ""
+
+            Button:
+                text: "Siguiente"
+                on_release: 
+                    #root.manager.current = root.manager.next()
+                    app.url_ready(url_field.text)
+
+<Paso2>:
+    description: ""
+
+    BoxLayout:
+        canvas:
+            Color:
+                rgb: 0.46, 0.64, 0.4
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        orientation: "vertical"
+
+        Label:
+            canvas.before:
+                Color:
+                    rgb: 0.31, 0.46, 0.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            text: "Descargar vídeos de Aragón TV v2.0"
+            text_size: self.size
+            size_hint_y: None
+            height: "40dp"
+            halign: "center"
+            valign: "middle"
+
+        StackLayout:
+            padding: ["20dp","20dp","20dp","20dp"]
+
+            #Image:
+            #    id: thumbnail
+            #    source: "thumb.jpg"
+            #    valign: "middle"
+            #    allow_stretch: True
+            #    keep_ratio: False
+            #    size_hint: None,None
+            #    height: "100dp"
+            #    width: self.height*(16.0/9.0)
+
+            Label:
+                text: root.description
+                text_size: self.size
+                valign: "top"
+                halign: "left"
+                markup: True
+
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgb: 0.31, 0.46, 0.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            orientation: "horizontal"
+            padding: ["20dp","15dp","20dp","15dp"]
+            size_hint_y: None
+            height: "60dp"
+
+            Button:
+                text: "Anterior"
+                on_release: root.manager.current = root.manager.previous()
+
+            Label:
+                text: ""
+
+            Button:
+                text: "Descargar"
+                on_release: app.start_download()
+
+<Paso3>:
+    resultado: ""
+    tamanyo: ""
+
+    BoxLayout:
+        canvas:
+            Color:
+                rgb: 0.46, 0.64, 0.4
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        orientation: "vertical"
+
+        Label:
+            canvas.before:
+                Color:
+                    rgb: 0.31, 0.46, 0.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            text: "Descargar vídeos de Aragón TV v2.0"
+            text_size: self.size
+            size_hint_y: None
+            height: "40dp"
+            halign: "center"
+            valign: "middle"
+
+        BoxLayout:
+            orientation: "vertical"
+            padding: ["10dp","10dp","10dp","10dp"]
+
+            ScrollView:
+
+                Label:
+                    text: root.resultado
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    valign: "top"
+                    font_size: 10
+
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgb: 0.31, 0.46, 0.25
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            orientation: "horizontal"
+            padding: ["20dp","15dp","20dp","15dp"]
+            size_hint_y: None
+            height: "60dp"
+
+            Button:
+                text: "Anterior"
+                on_release: app.abort_download()
+
+            Label:
+                text: root.tamanyo
+
+            Button:
+                text: "Siguiente"
+                #on_release: root.manager.current = root.manager.next()
+                opacity: 0
