@@ -331,7 +331,7 @@ def limpia_nombre_caracteres_especiales(s):
     logger.info("limpia_nombre_caracteres_especiales="+s)
     if not s:
         return ''
-    badchars = '\\/:*¿?\"<>|'
+    badchars = u'\\/:*¿?\"<>|'
     for c in badchars:
         s = s.replace(c, '')
     

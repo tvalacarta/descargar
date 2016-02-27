@@ -11,11 +11,18 @@
 # Historial de cambios:
 #------------------------------------------------------------
 
+def clean_string(s):
+    if not s:
+        return ''
+    validchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890."
+    stripped = ''.join(c for c in s if c in validchars)
+    return stripped;
+
 def info(texto):
-    print texto
+    print clean_string(texto)
 
 def debug(texto):
-    print texto
+    print clean_string(texto)
 
 def error(texto):
-    print texto
+    print clean_string(texto)

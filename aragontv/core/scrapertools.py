@@ -70,6 +70,8 @@ def cachePage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; 
         try:
             data = downloadpage(url,post,headers, timeout=timeout)
         except:
+            import traceback
+            logger.info(traceback.format_exc())
             data=""
     
     # CACHE_SIEMPRE: Siempre descarga de cache, sin comprobar fechas, excepto cuando no está
@@ -389,10 +391,15 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
             # then we get the HTTPCookieProcessor
             # and install the opener in urllib2
             if not follow_redirects:
+                logger.info("pelisalacarta.core.scrapertools not follow redirects")
                 opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=DEBUG_LEVEL),urllib2.HTTPCookieProcessor(cj),NoRedirectHandler())
             else:
+                logger.info("pelisalacarta.core.scrapertools follow redirects")
                 opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=DEBUG_LEVEL),urllib2.HTTPCookieProcessor(cj))
+
+            logger.info("pelisalacarta.core.scrapertools instalando opener...")
             urllib2.install_opener(opener)
+            logger.info("pelisalacarta.core.scrapertools instalado")
 
         else:
             logger.info("pelisalacarta.core.scrapertools opener usando ClientCookie")
@@ -405,18 +412,16 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
     # -------------------------------------------------
     # Cookies instaladas, lanza la petición
     # -------------------------------------------------
-
-    # Contador
-    inicio = time.clock()
+    logger.info("pelisalacarta.core.scrapertools iniciando peticion (reload)")
 
     # Diccionario para las cabeceras
     txheaders = {}
 
     # Construye el request
     if post is None:
-        logger.info("pelisalacarta.core.scrapertools petición GET")
+        logger.info("pelisalacarta.core.scrapertools peticion GET")
     else:
-        logger.info("pelisalacarta.core.scrapertools petición POST")
+        logger.info("pelisalacarta.core.scrapertools peticion POST")
     
     # Añade las cabeceras
     logger.info("pelisalacarta.core.scrapertools ---------------------------")
@@ -448,7 +453,6 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
         # Lee los datos y cierra
         if handle.info().get('Content-Encoding') == 'gzip':
             logger.info("pelisalacarta.core.scrapertools gzipped")
-            fin = inicio
             import StringIO
             data=handle.read()
             compressedstream = StringIO.StringIO(data)
@@ -495,10 +499,6 @@ def downloadpage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; 
 
         response = urllib2.urlopen(req)
     '''
-    
-    # Tiempo transcurrido
-    fin = time.clock()
-    logger.info("pelisalacarta.core.scrapertools Descargado en %d segundos " % (fin-inicio+1))
 
     return data
 

@@ -45,7 +45,11 @@ class DescargarApp(App):
         self.store = JsonStore("descargar-aragontv.json")
 
         if not self.store.exists("target_folder"):
-            self.store.put("target_folder",value=os.path.expanduser("~"))
+
+            if self.get_platform_name()=="android":
+                self.store.put("target_folder",value=os.getcwd() )
+            else:
+                self.store.put("target_folder",value=os.path.expanduser("~") )
 
         self.screen_manager = ScreenManager(transition=FadeTransition())
         
@@ -93,8 +97,6 @@ class DescargarApp(App):
 
         from channels import aragontv
         item = aragontv.detalle_episodio(item)
-        print item.title
-        print item.plot
 
         self.video_title = item.title
         self.media_url = item.media_url
@@ -118,20 +120,16 @@ class DescargarApp(App):
 
         # Start download in background
         from core import downloadtools
-        clean_file_name = downloadtools.limpia_nombre_caracteres_especiales(self.video_title)+".mp4"
-        clean_file_name = downloadtools.limpia_nombre_sin_acentos(clean_file_name)
-        print "clean_file_name="+clean_file_name
+        clean_file_name = downloadtools.limpia_nombre_caracteres_especiales(self.video_title.decode("utf-8"))+".mp4"
+        #print "clean_file_name="+clean_file_name
 
         self.target_file = os.path.join( self.paso1.ids.target_folder.text , clean_file_name )
-        print "target_file="+self.target_file
+        #print "target_file="+self.target_file
 
-        # platform es: win, linux, android, macosx, ios or unknown
-        from kivy import platform
-        platform_name = str(platform)
-        print "platform_name="+platform_name
-        folder_platform = os.path.join( "rtmpdump" , platform_name )
+        # get_platform_name es: win, linux, android, macosx, ios or unknown
+        folder_platform = os.path.join( os.getcwd() , "rtmpdump" , self.get_platform_name() )
         print "folder_platform="+folder_platform
-        if platform_name=="win":
+        if self.get_platform_name()=="win":
             rtmpdump = os.path.join(folder_platform,"rtmpdump.exe")
         else:
             rtmpdump = os.path.join(folder_platform,"rtmpdump")
@@ -161,12 +159,19 @@ class DescargarApp(App):
         if self.download_thread is not None:
             self.download_thread.abort()
 
+    def get_platform_name(self):
+        from kivy import platform
+        platform_name = str(platform)
+        print "platform_name="+platform_name
+        return platform_name
+
 #http://stackoverflow.com/questions/1094841/reusable-library-to-get-human-readable-version-of-file-size
 def human_size(num,suffix="B"):
     for unit in ['','K','M','G','T','P','E','Z']:
         if abs(num) < 1024.0:
             return "%3.1f%s%s" % (num, unit, suffix)
         num /= 1024.0
+
     return "%.1f%s%s" % (num, 'Yi', suffix)
 
 # Download in background
@@ -177,6 +182,7 @@ class DownloadThread(threading.Thread):
         self.exe = exe
         self.pantalla = pantalla
         self.running = False
+        self.aborted = False
 
         threading.Thread.__init__(self)
 
@@ -195,14 +201,16 @@ class DownloadThread(threading.Thread):
                 break
 
         self.running = False
-        app = App.get_running_app()
-        app.message("Proceso concluido","Ya tienes el fichero descargado en "+app.target_file)
-        #App.get_running_app().stop()
+        if not self.aborted:
+            app = App.get_running_app()
+            app.message("Proceso concluido","Ya tienes el fichero descargado en "+app.target_file)
+            #App.get_running_app().stop()
 
     def abort(self):
         print "DownloadThread.abort"
         
         if self.running:
+            self.aborted = True
             self.p.kill()
 
 Factory.register('LoadDialog', cls=LoadDialog)

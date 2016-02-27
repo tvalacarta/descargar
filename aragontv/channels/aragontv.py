@@ -14,7 +14,7 @@ from core import config
 from core import scrapertools
 from core.item import Item
 
-DEBUG = config.get_setting("debug")
+DEBUG = True
 CHANNELNAME = "aragontv"
 
 def isGeneric():
@@ -163,8 +163,10 @@ def episodios(item,data=""):
     return itemlist
 
 def detalle_episodio(item):
+    logger.info("tvalacarta.channels.aragontv detalle_episodio")
 
     data = scrapertools.cache_page(item.url)
+    logger.info("data="+data)
 
     scrapedtitle = scrapertools.find_single_match(data,'<title>(.*?)</title>')
     item.title = scrapedtitle
