@@ -144,8 +144,6 @@
                     app.url_ready(page_url.text)
 
 <Paso2>:
-    description: ""
-
     BoxLayout:
         canvas:
             Color:
@@ -185,7 +183,8 @@
             #    width: self.height*(16.0/9.0)
 
             Label:
-                text: root.description
+                id: description
+                text: ""
                 text_size: self.size
                 valign: "top"
                 halign: "left"
@@ -308,3 +307,26 @@
             Button:
                 text: "Elegir"
                 on_release: root.load(filechooser.path, filechooser.selection)
+
+<MessageDialog>:
+    orientation: "vertical"
+    padding: ["10dp","10dp","10dp","10dp"]
+
+    Label:
+        id: message_body
+        text_size: self.size
+        halign: "center"
+        valign: "middle"
+
+    Label:
+        text: ""
+        size_hint_y: None
+        height: "10dp"
+
+    Button:
+        text: "Entendido"
+        on_release: app.dismiss_popup()
+        size_hint_y: None
+        height: "30dp"
+        background_normal: ""
+        background_color: [0.22, 0.65, 0.31, 1]
