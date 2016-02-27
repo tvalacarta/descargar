@@ -119,10 +119,24 @@ class DescargarApp(App):
         # Start download in background
         from core import downloadtools
         clean_file_name = downloadtools.limpia_nombre_caracteres_especiales(self.video_title)+".mp4"
+        clean_file_name = downloadtools.limpia_nombre_sin_acentos(clean_file_name)
+        print "clean_file_name="+clean_file_name
 
         self.target_file = os.path.join( self.paso1.ids.target_folder.text , clean_file_name )
+        print "target_file="+self.target_file
 
-        exe = ['rtmpdump/darwin/rtmpdump','-r',self.media_url,'-o',self.target_file]
+        # platform es: win, linux, android, macosx, ios or unknown
+        from kivy import platform
+        platform_name = str(platform)
+        print "platform_name="+platform_name
+        folder_platform = os.path.join( "rtmpdump" , platform_name )
+        print "folder_platform="+folder_platform
+        if platform_name=="win":
+            rtmpdump = os.path.join(folder_platform,"rtmpdump.exe")
+        else:
+            rtmpdump = os.path.join(folder_platform,"rtmpdump")
+
+        exe = [rtmpdump,'-r',self.media_url,'-o',self.target_file]
         self.download_thread = DownloadThread(exe,self.paso3)
         self.download_thread.start()
 
