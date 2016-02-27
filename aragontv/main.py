@@ -4,10 +4,14 @@ import threading, os
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.clock import Clock
+from kivy.uix.popup import Popup
+from kivy.uix.floatlayout import FloatLayout
+from kivy.factory import Factory
+from kivy.properties import ObjectProperty
 
 from kivy.config import Config
 Config.set('graphics', 'width', '800')
-Config.set('graphics', 'height', '300')
+Config.set('graphics', 'height', '350')
 
 class Paso1(Screen):
     pass
@@ -18,10 +22,18 @@ class Paso2(Screen):
 class Paso3(Screen):
     pass
 
+class LoadDialog(FloatLayout):
+    load = ObjectProperty(None)
+    cancel = ObjectProperty(None)
+
 class DescargarApp(App):
+
     def build(self):
         self.screen_manager = ScreenManager(transition=FadeTransition())
+        
         self.paso1 = Paso1(name='Paso 1')
+        self.paso1.ids.target_folder.text = os.path.expanduser("~")
+
         self.paso2 = Paso2(name='Paso 2')
         self.paso3 = Paso3(name='Paso 3')
         self.screen_manager.add_widget(self.paso1)
@@ -29,14 +41,26 @@ class DescargarApp(App):
         self.screen_manager.add_widget(self.paso3)
         return self.screen_manager
 
+    def dismiss_popup(self):
+        self._popup.dismiss()
+
+    def target_selected(self, path, filename):
+        self._popup.dismiss()
+        self.paso1.ids.target_folder.text = path
+
+    def target_selection(self):
+        content = LoadDialog(load=self.target_selected, cancel=self.dismiss_popup)
+        content.ids.filechooser.path = self.paso1.ids.target_folder.text
+        self._popup = Popup(title="Elige destino", content=content, size_hint=(0.9, 0.9))
+        self._popup.open()
+
     def url_ready(self,page_url):
         print "url_ready"
 
-        self.paso1.page_url = page_url
-        print self.paso1.page_url
+        print self.paso1.ids.page_url.text
 
         from core.item import Item
-        item = Item(url=self.paso1.page_url)
+        item = Item(url=self.paso1.ids.page_url.text)
 
         from channels import aragontv
         item = aragontv.detalle_episodio(item)
@@ -51,7 +75,7 @@ class DescargarApp(App):
         print "start_download"
 
         from servers import aragontv
-        video_urls = aragontv.get_video_url(self.paso1.page_url)
+        video_urls = aragontv.get_video_url(self.paso1.ids.page_url.text)
         print video_urls
 
         media_url = video_urls[0][1]
@@ -119,6 +143,8 @@ class DownloadThread(threading.Thread):
     def abort(self):
         print "DownloadThread.abort"
         self.p.kill()
+
+Factory.register('LoadDialog', cls=LoadDialog)
 
 if __name__ == '__main__':
     DescargarApp().run()

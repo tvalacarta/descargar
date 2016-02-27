@@ -1,12 +1,11 @@
 #: import Animation kivy.animation.Animation
 
 <Paso1>:
-    page_url: ""
 
     BoxLayout:
         canvas:
             Color:
-                rgb: 0.46, 0.64, 0.4
+                rgb: 0.31, 0.37, 0.42
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -16,7 +15,7 @@
         Label:
             canvas.before:
                 Color:
-                    rgb: 0.31, 0.46, 0.25
+                    rgb: 0.16, 0.22, 0.29
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -35,8 +34,47 @@
             Label:
                 text: ""
 
+            BoxLayout:
+                orientation: "horizontal"
+
+                Label:
+                    text: "Introduce la URL de la página donde está el vídeo"
+                    text_size: self.size
+                    size_hint_y: None
+                    height: "40dp"
+
+                Bubble
+                    arrow_pos: "bottom_mid"
+                    size_hint_y: None
+                    height: "50dp"
+                    size_hint_x: None
+                    width: "100dp"
+
+                    BubbleButton:
+                        text: 'Pegar'
+                        on_release: 
+                            from kivy.core.clipboard import Clipboard
+                            page_url.text = Clipboard.paste()
+
             Label:
-                text: "Introduce la URL de la página donde está el vídeo"
+                text: ""
+                size_hint_y: None
+                height: "10dp"
+
+            TextInput:
+                text: "http://alacarta.aragontelevision.es/programas/unidad-movil/unos-goyas-muy-aragoneses-12022016-2132"
+                id: page_url
+                multiline: False
+                size_hint_y: None
+                height: "35dp"
+
+            Label:
+                text: ""
+                size_hint_y: None
+                height: "10dp"
+
+            Label:
+                text: "Elige el directorio de destino"
                 text_size: self.size
                 size_hint_y: None
                 height: "40dp"
@@ -46,12 +84,32 @@
                 size_hint_y: None
                 height: "10dp"
 
-            TextInput:
-                text: "http://alacarta.aragontelevision.es/programas/unidad-movil/unos-goyas-muy-aragoneses-12022016-2132"
-                id: url_field
-                multiline: False
+            BoxLayout:
+                orientation: "horizontal"
                 size_hint_y: None
                 height: "35dp"
+
+                TextInput:
+                    text: ""
+                    id: target_folder
+                    multiline: False
+                    size_hint_y: None
+                    height: "35dp"
+
+                Label:
+                    text: ""
+                    size_hint_x: None
+                    width: "10dp"
+
+                Button:
+                    text: "..."
+                    on_release: app.target_selection()
+                    size_hint_x: None
+                    width: "80dp"
+                    size_hint_y: None
+                    height: "35dp"
+                    background_normal: ""
+                    background_color: [0.22, 0.65, 0.31, 1]
 
             Label:
                 text: ""
@@ -59,7 +117,7 @@
         BoxLayout:
             canvas.before:
                 Color:
-                    rgb: 0.31, 0.46, 0.25
+                    rgb: 0.16, 0.22, 0.29
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -79,9 +137,11 @@
 
             Button:
                 text: "Siguiente"
+                background_normal: ""
+                background_color: [0.22, 0.65, 0.31, 1]
                 on_release: 
                     #root.manager.current = root.manager.next()
-                    app.url_ready(url_field.text)
+                    app.url_ready(page_url.text)
 
 <Paso2>:
     description: ""
@@ -89,7 +149,7 @@
     BoxLayout:
         canvas:
             Color:
-                rgb: 0.46, 0.64, 0.4
+                rgb: 0.31, 0.37, 0.42
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -99,7 +159,7 @@
         Label:
             canvas.before:
                 Color:
-                    rgb: 0.31, 0.46, 0.25
+                    rgb: 0.16, 0.22, 0.29
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -134,7 +194,7 @@
         BoxLayout:
             canvas.before:
                 Color:
-                    rgb: 0.31, 0.46, 0.25
+                    rgb: 0.16, 0.22, 0.29
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -147,6 +207,8 @@
             Button:
                 text: "Anterior"
                 on_release: root.manager.current = root.manager.previous()
+                background_normal: ""
+                background_color: [0.22, 0.65, 0.31, 1]
 
             Label:
                 text: ""
@@ -154,6 +216,8 @@
             Button:
                 text: "Descargar"
                 on_release: app.start_download()
+                background_normal: ""
+                background_color: [0.22, 0.65, 0.31, 1]
 
 <Paso3>:
     resultado: ""
@@ -162,7 +226,7 @@
     BoxLayout:
         canvas:
             Color:
-                rgb: 0.46, 0.64, 0.4
+                rgb: 0.31, 0.37, 0.42
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -172,7 +236,7 @@
         Label:
             canvas.before:
                 Color:
-                    rgb: 0.31, 0.46, 0.25
+                    rgb: 0.16, 0.22, 0.29
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -201,7 +265,7 @@
         BoxLayout:
             canvas.before:
                 Color:
-                    rgb: 0.31, 0.46, 0.25
+                    rgb: 0.16, 0.22, 0.29
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -214,6 +278,8 @@
             Button:
                 text: "Anterior"
                 on_release: app.abort_download()
+                background_normal: ""
+                background_color: [0.22, 0.65, 0.31, 1]
 
             Label:
                 text: root.tamanyo
@@ -222,3 +288,23 @@
                 text: "Siguiente"
                 #on_release: root.manager.current = root.manager.next()
                 opacity: 0
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserIconView:
+            id: filechooser
+            dirselect: True
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancelar"
+                on_release: root.cancel()
+
+            Button:
+                text: "Elegir"
+                on_release: root.load(filechooser.path, filechooser.selection)

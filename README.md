@@ -7,3 +7,5 @@ Aquí van algunas capturas:
 ![paso1](http://media.tvalacarta.info/descargar/aragontv/paso1.jpg)
 ![paso2](http://media.tvalacarta.info/descargar/aragontv/paso2.jpg)
 ![paso3](http://media.tvalacarta.info/descargar/aragontv/paso3.jpg)
+
+.
