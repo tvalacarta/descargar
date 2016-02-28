@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-.
-import threading, os
+import threading, os, subprocess
 
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
@@ -47,7 +47,10 @@ class DescargarApp(App):
         if not self.store.exists("target_folder"):
 
             if self.get_platform_name()=="android":
-                self.store.put("target_folder",value=os.getcwd() )
+                from jnius import autoclass
+                Environment = autoclass('android.os.Environment')
+                download_folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                self.store.put("target_folder",value=download_folder.getAbsolutePath() )
             else:
                 self.store.put("target_folder",value=os.path.expanduser("~") )
 
@@ -134,7 +137,21 @@ class DescargarApp(App):
         else:
             rtmpdump = os.path.join(folder_platform,"rtmpdump")
 
-        exe = [rtmpdump,'-r',self.media_url,'-o',self.target_file]
+        # En Android hay que darle antes expresamente permisos de ejecución al binario de rtmpdump
+        if self.get_platform_name()=="android":
+            subprocess.Popen(["chmod","0755",rtmpdump], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            # Y además al ser rtmpdump 2.3 tiene una sintaxis distinta
+            # rtmp://fms.1ADAC.systemcdn.net/801ADAC/cartvrtmp/web/mp4:7984/7984.mp4
+            # ./rtmpdump -r rtmp://fms.1ADAC.systemcdn.net --app 801ADAC/cartvrtmp/web --playpath mp4:7984/7984.mp4 -o out.mp4
+            from core import scrapertools
+            host = scrapertools.find_single_match(self.media_url,'(rtmp://[^/]+)')
+            app = scrapertools.find_single_match(self.media_url,'rtmp://[^/]+/(.*?)/mp4\:')
+            playpath = scrapertools.find_single_match(self.media_url,'rtmp://[^/]+/.*?/(mp4\:.*?)$')
+            exe = [rtmpdump,'-r',host,'--app',app,'--playpath',playpath,'-o',self.target_file]
+        else:
+            exe = [rtmpdump,'-r',self.media_url,'-o',self.target_file]
+
         self.download_thread = DownloadThread(exe,self.paso3)
         self.download_thread.start()
 
@@ -189,7 +206,6 @@ class DownloadThread(threading.Thread):
     def run(self):
         print "DownloadThread.run"
 
-        import subprocess
         self.p = subprocess.Popen(self.exe, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         self.running = True
         while(True):
