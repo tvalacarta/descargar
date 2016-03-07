@@ -163,16 +163,13 @@ def episodios(item,data=""):
     return itemlist
 
 def detalle_episodio(item):
-    logger.info("tvalacarta.channels.aragontv detalle_episodio")
 
     data = scrapertools.cache_page(item.url)
-    logger.info("data="+data)
-
-    scrapedtitle = scrapertools.find_single_match(data,'<title>(.*?)</title>')
-    item.title = scrapedtitle
 
     scrapedplot = scrapertools.find_single_match(data,'<span class="title">Resumen del v[^>]+</span>(.*?)</div>')
     item.plot = scrapertools.htmlclean( scrapedplot ).strip()
+    scrapedtitle = scrapertools.find_single_match(data,'<title>(.*?)</title>')
+    item.title = scrapedtitle
 
     item.geolocked = "0"
     

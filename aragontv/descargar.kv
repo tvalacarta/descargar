@@ -1,4 +1,21 @@
 #: import Animation kivy.animation.Animation
+<Footer@BoxLayout>:
+    canvas.before:
+        Color:
+            rgb: 0.16, 0.22, 0.29
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    orientation: "horizontal"
+    padding: ["20dp","10dp","20dp","10dp"]
+    size_hint_y: None
+    height: "60dp"
+    spacing: "200dp"
+
+<FooterButton@Button>:
+    background_normal: ""
+    background_color: [0.22, 0.65, 0.31, 1]
 
 <Paso1>:
 
@@ -62,8 +79,7 @@
                 height: "10dp"
 
             TextInput:
-                #text: "http://alacarta.aragontelevision.es/programas/vaughan/common-mistakes/common-mistakes-cap-65-16102012-1038"
-                text: "http://alacarta.aragontelevision.es/programas/unidad-movil/unos-goyas-muy-aragoneses-12022016-2132"
+                text: ""
                 id: page_url
                 multiline: False
                 size_hint_y: None
@@ -115,34 +131,15 @@
             Label:
                 text: ""
 
-        BoxLayout:
-            canvas.before:
-                Color:
-                    rgb: 0.16, 0.22, 0.29
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+        Footer:
 
-            orientation: "horizontal"
-            padding: ["20dp","15dp","20dp","15dp"]
-            size_hint_y: None
-            height: "60dp"
-
-            Button:
+            FooterButton:
                 text: "Anterior"
-                #on_release: root.manager.current = root.manager.previous()
                 opacity: 0
 
-            Label:
-                text: ""
-
-            Button:
+            FooterButton:
                 text: "Siguiente"
-                background_normal: ""
-                background_color: [0.22, 0.65, 0.31, 1]
-                on_release: 
-                    #root.manager.current = root.manager.next()
-                    app.url_ready(page_url.text)
+                on_release: app.url_ready(page_url.text)
 
 <Paso2>:
     BoxLayout:
@@ -191,36 +188,17 @@
                 halign: "left"
                 markup: True
 
-        BoxLayout:
-            canvas.before:
-                Color:
-                    rgb: 0.16, 0.22, 0.29
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+        Footer:
 
-            orientation: "horizontal"
-            padding: ["20dp","15dp","20dp","15dp"]
-            size_hint_y: None
-            height: "60dp"
-
-            Button:
+            FooterButton:
                 text: "Anterior"
                 on_release: root.manager.current = root.manager.previous()
-                background_normal: ""
-                background_color: [0.22, 0.65, 0.31, 1]
 
-            Label:
-                text: ""
-
-            Button:
+            FooterButton:
                 text: "Descargar"
                 on_release: app.start_download()
-                background_normal: ""
-                background_color: [0.22, 0.65, 0.31, 1]
 
 <Paso3>:
-    resultado: ""
     tamanyo: ""
 
     BoxLayout:
@@ -252,41 +230,22 @@
             orientation: "vertical"
             padding: ["10dp","10dp","10dp","10dp"]
 
-            ScrollView:
-
-                Label:
-                    text: root.resultado
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                    text_size: self.width, None
-                    valign: "top"
-                    font_size: "10dp"
-
-        BoxLayout:
-            canvas.before:
-                Color:
-                    rgb: 0.16, 0.22, 0.29
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-
-            orientation: "horizontal"
-            padding: ["20dp","15dp","20dp","15dp"]
-            size_hint_y: None
-            height: "60dp"
-
-            Button:
-                text: "Anterior"
-                on_release: app.abort_download()
-                background_normal: ""
-                background_color: [0.22, 0.65, 0.31, 1]
+            Image:
+                id: cargando
+                opacity: 0
+                source: "loader.gif"
 
             Label:
                 text: root.tamanyo
 
-            Button:
+        Footer:
+
+            FooterButton:
+                text: "Anterior"
+                on_release: app.abort_download()
+
+            FooterButton:
                 text: "Siguiente"
-                #on_release: root.manager.current = root.manager.next()
                 opacity: 0
 
 <LoadDialog>:
