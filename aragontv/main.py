@@ -39,6 +39,10 @@ class DescargarApp(App):
     # Desactiva el cuadro de configuración genérico de Kivy
     use_kivy_settings = False
 
+    # Para que no se cierre al cambiar de aplicación en Android
+    def on_pause(self):
+        return True
+
     def build(self):
         self.download_thread = None
 
@@ -54,10 +58,14 @@ class DescargarApp(App):
             else:
                 self.store.put("target_folder",value=os.path.expanduser("~") )
 
+        if not self.store.exists("source_url"):
+            self.store.put("source_url",value="http://alacarta.aragontelevision.es/programas/chino-chano/por-la-sierra-de-armantes-28022016-1452")
+
         self.screen_manager = ScreenManager(transition=FadeTransition())
         
         self.paso1 = Paso1(name='Paso 1')
         self.paso1.ids.target_folder.text = self.store.get("target_folder")["value"]
+        self.paso1.ids.page_url.text = self.store.get("source_url")["value"]
 
         self.paso2 = Paso2(name='Paso 2')
         self.paso3 = Paso3(name='Paso 3')
@@ -72,6 +80,7 @@ class DescargarApp(App):
     def target_selected(self, path, filename):
         self._popup.dismiss()
         self.paso1.ids.target_folder.text = path
+        self.store.put("target_folder",value=self.paso1.ids.target_folder.text)
 
     def target_selection(self):
         content = LoadDialog(load=self.target_selected, cancel=self.dismiss_popup)
@@ -95,6 +104,9 @@ class DescargarApp(App):
             self.message("Hay un problema...","La URL que has introducido no es válida")
             return
 
+        self.store.put("target_folder",value=self.paso1.ids.target_folder.text)
+        self.store.put("source_url",value=self.paso1.ids.page_url.text)
+
         from core.item import Item
         item = Item(url=self.paso1.ids.page_url.text)
 
@@ -108,11 +120,9 @@ class DescargarApp(App):
             self.message("Hay un problema...","No se puede encontrar un vídeo en esa URL")
             return
 
-        self.store.put("target_folder",value=self.paso1.ids.target_folder.text)
-
         self.screen_manager.current = self.screen_manager.next()
 
-        self.paso2.ids.description.text = "[b]"+item.title+"[/b]\n"+item.plot
+        self.paso2.ids.description.text = "[b]"+item.title+"[/b]\n\n"+item.plot
 
     def start_download(self):
         print "start_download"
@@ -123,7 +133,7 @@ class DescargarApp(App):
 
         # Start download in background
         from core import downloadtools
-        clean_file_name = downloadtools.limpia_nombre_caracteres_especiales(self.video_title.decode("utf-8"))+".mp4"
+        clean_file_name = downloadtools.limpia_nombre_caracteres_especiales(self.video_title.decode("utf-8"))+".flv"
         #print "clean_file_name="+clean_file_name
 
         self.target_file = os.path.join( self.paso1.ids.target_folder.text , clean_file_name )
@@ -141,16 +151,14 @@ class DescargarApp(App):
         if self.get_platform_name()=="android":
             subprocess.Popen(["chmod","0755",rtmpdump], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-            # Y además al ser rtmpdump 2.3 tiene una sintaxis distinta
-            # rtmp://fms.1ADAC.systemcdn.net/801ADAC/cartvrtmp/web/mp4:7984/7984.mp4
-            # ./rtmpdump -r rtmp://fms.1ADAC.systemcdn.net --app 801ADAC/cartvrtmp/web --playpath mp4:7984/7984.mp4 -o out.mp4
-            from core import scrapertools
-            host = scrapertools.find_single_match(self.media_url,'(rtmp://[^/]+)')
-            app = scrapertools.find_single_match(self.media_url,'rtmp://[^/]+/(.*?)/mp4\:')
-            playpath = scrapertools.find_single_match(self.media_url,'rtmp://[^/]+/.*?/(mp4\:.*?)$')
-            exe = [rtmpdump,'-r',host,'--app',app,'--playpath',playpath,'-o',self.target_file]
-        else:
-            exe = [rtmpdump,'-r',self.media_url,'-o',self.target_file]
+        exe = [rtmpdump]
+        exe.append("-r")
+        exe.extend(self.media_url.replace("app=","--app ").replace("playpath=","--playpath ").split(" "))
+        #exe.append("--live")
+        exe.append("-o")
+        exe.append(self.target_file)
+
+        self.paso3.ids.cargando.opacity=1
 
         self.download_thread = DownloadThread(exe,self.paso3)
         self.download_thread.start()
@@ -211,7 +219,7 @@ class DownloadThread(threading.Thread):
         while(True):
             retcode = self.p.poll() #returns None while subprocess is running
             line = self.p.stdout.readline()
-            self.pantalla.resultado = self.pantalla.resultado + line
+            #print line
             
             if(retcode is not None):
                 break
@@ -219,7 +227,11 @@ class DownloadThread(threading.Thread):
         self.running = False
         if not self.aborted:
             app = App.get_running_app()
-            app.message("Proceso concluido","Ya tienes el fichero descargado en "+app.target_file)
+            app.paso3.ids.cargando.opacity=0
+            if os.path.exists(app.target_file):
+                app.message("Proceso concluido","Ya tienes el fichero descargado en "+app.target_file)
+            else:
+                app.message("Error","El fichero "+app.target_file+" no se ha grbado correctamente")
             #App.get_running_app().stop()
 
     def abort(self):
