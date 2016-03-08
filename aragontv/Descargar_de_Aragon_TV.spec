@@ -24,7 +24,7 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=True , manifest='data\\icon.ico')
+          console=True, icon='c:\\Users\\Jesus\\Downloads\\descargar-master\\aragontv\\data\\icon.ico')
 coll = COLLECT(exe, Tree('c:\\Users\\Jesus\\Downloads\\descargar-master\\aragontv\\'),
                a.binaries,
                a.zipfiles,

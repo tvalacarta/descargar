@@ -1,4 +1,27 @@
-# -*- coding: UTF-8 -*-.
+# -*- coding: utf-8 -*-
+#------------------------------------------------------------
+# Descargar de Aragón TV v2.0
+# Copyright 2015 tvalacarta@gmail.com
+#
+# Distributed under the terms of GNU General Public License v3 (GPLv3)
+# http://www.gnu.org/licenses/gpl-3.0.html
+#------------------------------------------------------------
+# This file is part of Descargar de Aragón TV v2.0.
+#
+# Descargar de Aragón TV v2.0 is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Descargar de Aragón TV v2.0 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Descargar de Aragón TV v2.0.  If not, see <http://www.gnu.org/licenses/>.
+#------------------------------------------------------------
+
 import threading, os, subprocess
 
 from kivy.app import App
@@ -139,11 +162,16 @@ class DescargarApp(App):
         self.target_file = os.path.join( self.paso1.ids.target_folder.text , clean_file_name )
         #print "target_file="+self.target_file
 
+        if self.get_platform_name()=="win":
+            self.target_file = self.target_file.encode("utf-8")
+
         # get_platform_name es: win, linux, android, macosx, ios or unknown
         folder_platform = os.path.join( os.getcwd() , "rtmpdump" , self.get_platform_name() )
         print "folder_platform="+folder_platform
         if self.get_platform_name()=="win":
             rtmpdump = os.path.join(folder_platform,"rtmpdump.exe")
+        elif self.get_platform_name()=="linux":
+            rtmpdump = "rtmpdump"
         else:
             rtmpdump = os.path.join(folder_platform,"rtmpdump")
 

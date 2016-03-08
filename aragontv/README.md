@@ -14,11 +14,11 @@ Aquí van algunos enlaces:
 
 - Aragón TV: http://alacarta.aragontelevision.es/
 - Kivy: http://kivy.org/
-- Tvalacarta: http://blog.tvalacarta.info/plugin-xbmc/tvalacarta
+- tvalacarta: http://blog.tvalacarta.info/plugin-xbmc/tvalacarta
 - Rtmpdump: https://rtmpdump.mplayerhq.hu/
 
 Y aquí algunas capturas:
 
-![paso1](http://media.tvalacarta.info/descargar/aragontv/paso1n.jpg)
-![paso2](http://media.tvalacarta.info/descargar/aragontv/paso2n.jpg)
-![paso3](http://media.tvalacarta.info/descargar/aragontv/paso3n.jpg)
+![paso1](http://media.tvalacarta.info/herramientas/aragontv/descargar-aragontv-paso1.png)
+![paso2](http://media.tvalacarta.info/herramientas/aragontv/descargar-aragontv-paso2.png)
+![paso3](http://media.tvalacarta.info/herramientas/aragontv/descargar-aragontv-paso3.png)
