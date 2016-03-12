@@ -259,7 +259,7 @@ class DownloadThread(threading.Thread):
             if os.path.exists(app.target_file):
                 app.message("Proceso concluido","Ya tienes el fichero descargado en "+app.target_file)
             else:
-                app.message("Error","El fichero "+app.target_file+" no se ha grbado correctamente")
+                app.message("Error","El fichero "+app.target_file+" no se ha grabado correctamente")
             #App.get_running_app().stop()
 
     def abort(self):
